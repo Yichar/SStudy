@@ -1,13 +1,10 @@
-class Solution {
-public:
-    int record[26] = {0};
-    int firstUniqChar(string s) {
-        for(char c:s)    
-            record[c-'a']++;
-        for(int i = 0; i < s.size(); i++){
-            if(record[s[i] - 'a'] == 1)
-                return i;
-        }
-        return -1;
-    }
-};
+/*************************************************************************
+	> File Name: leecode387_第一个唯一字符.cpp
+	> Author: 
+	> Mail: 
+	> Created Time: 三 12/23 00:29:25 2020
+ ************************************************************************/
+
+#include<iostream>
+using namespace std;
+
