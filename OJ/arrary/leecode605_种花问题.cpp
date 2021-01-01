@@ -30,3 +30,27 @@ public:
         
     }
 };
+
+
+
+class Solution {
+public:
+    int ans = 0;
+    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
+        if( n == 0 ) return true;
+        flowerbed.insert(flowerbed.begin(),0); //头尾插0
+        flowerbed.push_back(0);
+
+        int start = 0;
+        //三个0 就多跳一个，插一个树
+        for(int i = 0;  i < flowerbed.size() - 2; i++) {
+           if(flowerbed[i] == 0 && flowerbed[i+1] == 0 && flowerbed[i+2] == 0) {
+                n--;
+                i++; //再跳一格
+            }
+            if(n == 0) return true;
+        }
+        return false;
+
+    }
+};
