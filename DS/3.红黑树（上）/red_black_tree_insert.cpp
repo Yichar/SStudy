@@ -1,10 +1,3 @@
-/*************************************************************************
-	> File Name: red_black_tree_insert.cpp
-	> Author: huguang
-	> Mail: hug@haizeix.com
-	> Created Time: 
- ************************************************************************/
-
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -35,7 +28,6 @@ Node *getNewNode(int key) {
 int has_red_child(Node *root) {
     return root->lchild->color == 0 || root->rchild->color == 0;
 }
-
 Node *left_rotate(Node *root) {
     Node *temp = root->rchild;
     root->rchild = temp->lchild;
