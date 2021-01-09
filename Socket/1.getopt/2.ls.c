@@ -9,6 +9,10 @@
 #include<stdlib.h>
 #include<unistd.h>
 #include<string.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 //optarg 参数的字符串指针
 //optind 下一个搜索的选项序号 
 //optopt 保存错误选项
@@ -21,13 +25,30 @@ char up_dir[100];
 char temp_dir[100];
 //getcwd(this_dir); 
 //printf("%s",this_dir);
-void ls_dir(int aflag, int lflag,char* dir){
-    if(strcmp(dir,"./") == 0) {
-        if(getcwd(this_dir,sizeof(this_dir)))
-            printf("we do %s\n",this_dir);
-    } else
-        printf("we do %s\n",dir);
-    
+int ls_dir(int aflag, int lflag,char* dir){
+    struct dirent *direntp;
+    struct stat sb;
+    DIR *dirp;
+    char filename[128];
+    getcwd(this_dir,sizeof(this_dir));
+    chdir(dir); 
+    printf("we do %s\n",dir);
+    if ((dirp = opendir(dir)) == NULL) {
+        perror("opendir");
+        return 1;
+    }
+    while ((direntp = readdir(dirp)) != NULL) {
+        sprintf(filename, "%s",direntp->d_name);
+        if (lstat(filename, &sb) == -1) {
+            perror("lstat");
+            return 2;
+        }
+        printf("%s\n",direntp->d_name);
+    }
+    closedir(dirp);
+
+    chdir(this_dir);
+    return 0;
 }
 int main(int argc, char **argv) {
     //初始化选项标记

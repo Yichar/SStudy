@@ -102,6 +102,108 @@ Node* insert(Node *root,int key){
     root->color = 1;
     return root;
 }
+
+
+Node *predecessor(Node *root) {
+    Node *temp = root->lchild;
+    while (temp->rchild) temp = temp->rchild;
+    return temp;
+
+}
+
+Node *erase_maintain(Node *root) {
+    //无双重黑，不用调整
+    if (root->lchild->color != 2 && root->rchild->color != 2) 
+        return root;
+    //情况三： 子节：双重黑  + 红色 -> 情况一和二 子节点为双重黑 + 黑  
+    if (has_red_child(root)) {
+        int flag = 0;
+        //原根改红
+        root->color = 0;
+        //左子树是红 小右旋
+        if (root->lchild->color == 0) {
+            root = right_rotate(root);
+            flag = 1;
+        //右子树为红 小左旋
+        } else {
+            root = left_rotate(root);
+            flag = 2;
+        }
+        //新根改黑
+        root->color = 1;
+        //左旋递归左树，右旋递归右树
+        if (flag == 1) root->rchild = erase_maintain(root->rchild);
+        else root->lchild = erase_maintain(root->lchild);
+    }
+    //情况一：子节点：双重黑 + 黑<黑，黑>
+    if ((root->lchild->color == 2  &&  !has_red_child(root->rchild)) ||
+        root->rchild->color == 2 && !has_red_child(root->lchild) ) {
+        // 父节点加，子节点减
+            root->lchild->color -= 1;
+            root->rchild->color -= 1;
+            root->color += 1;
+            return root;
+    }
+    //情况二： 子节点： 双重黑 + 黑<黑，红> 或者 黑<红，黑>
+    if (root->lchild->color == 2) {
+        //RL 小右旋 + 左旋
+        if (root->rchild->rchild->color != 0) {
+            root->rchild->color = 0;
+            root->rchild = right_rotate(root->rchild);
+            root->rchild->color = 1;
+        }
+        //RR 左旋
+        root = left_rotate(root);
+        root->color = root->lchild->color;
+
+    } else {
+        //LR 小左旋 + 右旋
+        if (root->lchild->lchild->color != 0) {
+            root->lchild->color = 0;
+            root->lchild = left_rotate(root->lchild);
+            root->lchild->color = 1;
+        }
+        //LL 右旋
+        root = right_rotate(root);
+        root->color = root->rchild->color;
+    }
+    return root;
+}
+
+Node *__erase(Node *root, int key) {
+    if (root == NIL) return NIL;
+    if (key < root->key) 
+        root->lchild = __erase(root->lchild, key);
+    else if (key > root->key)
+        root->rchild = __erase(root->rchild, key);
+    else {
+        //度为0或者1，将该节点的颜色加到子节点上，然后用子节点替换之，；
+        if (root->lchild == NIL || root->rchild == NIL) {
+            Node *temp = root->lchild != NIL ? root->lchild : root->rchild;
+            temp->color += root->color;
+            free(root);
+            return temp;
+        } else {
+            //找前驱，转换为度为1的情况
+            Node *temp = predecessor(root);
+            root->key = temp->key;
+            root->lchild = __erase(root->lchild, temp->key);
+
+        }
+
+    }
+
+    return erase_maintain(root);
+
+}
+
+//删除双黑节点，变为黑色。
+Node *erase(Node *root, int key) {
+    root = __erase(root, key);
+    root->color = 1;
+    return root;
+
+}
 void print(Node *root) {
     printf("%d[%d], %d, %d\n",
            root->color,root->key,
@@ -128,6 +230,9 @@ int main() {
         switch (op) {
             case 1: 
                 root = insert(root,val);
+                break;
+            case 2:
+                root = erase(root,val);
                 break;
             
         }
