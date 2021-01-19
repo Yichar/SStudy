@@ -1,0 +1,8 @@
+config {
+
+heroID:1
+heroName:丹儿
+heroAtk:9999
+heroDef:1000
+heroInfo:超美
+}
