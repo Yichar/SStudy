@@ -31,3 +31,35 @@ public:
     
 };
 
+
+
+class Solution {
+public:
+    //不翻转A的做法
+    vector<int> addToArrayForm(vector<int>& A, int K) {
+        if(K == 0) return A;
+        int lenK = (int)log10(K) + 1;
+        int lenA = A.size();
+        int end = 0;
+        if (lenA >= lenK)
+            end = lenA  - lenK;
+        for (int i = A.size() - 1 ; i >= end; i--) {
+            A[i] += K % 10;
+            K /= 10;
+        }
+        while(K) {
+            A.insert(A.begin(),K % 10);
+            K /= 10;
+        }
+        for (int i = A.size() - 1; i >= 0; i--) {
+            if (A[i] >= 10 && i > 0) {
+                A[i - 1] += A[i] / 10;
+                A[i] %= 10;
+            } else if(A[i] >= 10 && i == 0) {
+                A.insert(A.begin(),A[i] / 10);
+                A[1] %= 10;
+            }
+        }
+        return A;
+    }
+};
