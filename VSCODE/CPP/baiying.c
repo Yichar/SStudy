@@ -21,11 +21,12 @@ int main() {
     scanf("%d",&n);
     for(int i = 1;i <= n; i++) {
         int temp = i;
-        if (temp % 2 == 1)
-            temp++;
-        if (temp % 10 ==0)
-            temp = temp / 10;
-        sum +=temp;
+        if (temp % 2 == 1) 
+            sum += temp + 1;
+        else if (temp % 10 ==0)
+            sum += temp / 10;
+        else
+            sum += temp;
     }
     printf("%d",sum);
 
