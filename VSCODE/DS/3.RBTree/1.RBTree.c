@@ -7,10 +7,9 @@
 
 typedef struct Node {
     int key;
-    int color; // 0  red 1 black 2 double black
+    int color; // 0 red, 1 black, 2 double black
     struct Node *lchild, *rchild;
 } Node;
-
 
 Node __NIL;
 #define NIL (&__NIL)
@@ -19,15 +18,16 @@ void init_NIL() {
     NIL->key = 0;
     NIL->color = 1;
     NIL->lchild = NIL->rchild = NIL;
-    return;
+    return ;
 }
+
 
 
 Node *getNewNode(int key) {
     Node *p = (Node *)malloc(sizeof(Node));
     p->key = key;
-    p->color = 1;
-    p->lchild->rchild = NIL;
+    p->color = 0;
+    p->lchild = p->rchild = NIL;
     return p;
 }
 
@@ -43,24 +43,22 @@ Node *left_rotate(Node *root) {
     return newroot;
 }
 
-
 Node *right_rotate(Node *root) {
     Node *newroot = root->lchild;
     root->lchild = newroot->rchild;
     newroot->rchild = root;
     return newroot;
 }
+
 Node *insert_maintain(Node *root) {
     //左右孩子无红色节点，无需调整。
     if(!has_red_child(root)) return root; 
     //此时root必然为黑色，否则会提前冲突。
-
     int flag = 0;
     //只要发现左右节点均为红色，就改成红黑黑(不一定冲突，但是可以直接调整，偷个懒)
     if (root->lchild->color == 0 && root->rchild->color == 0) {
         goto insert_end;
     }
-    
     if (root->lchild->color == 0 && has_red_child(root->lchild)) 
         flag = 1; //LL，LR
     if (root->rchild->color == 0 && has_red_child(root->rchild))
@@ -83,49 +81,55 @@ Node *insert_maintain(Node *root) {
         root->lchild->color = root->rchild->color = 1;
         return root;
 }
-Node *insert(Node *root, int key) {
+Node *__insert(Node *root, int key) {
     if (root == NIL) return getNewNode(key);
-    if (key == root->key) return root;
-    if (key < root->key) root->lchild = insert(root->lchild,key);
-    else root->rchild = insert(root->rchild,key);
+    if (root->key == key) return root;
+    if (key < root->key) {
+        root->lchild = __insert(root->lchild, key);
+    } else {
+        root->rchild = __insert(root->rchild, key);
+    }
     return insert_maintain(root);
 }
+Node *insert(Node *root, int key) {
+    root = __insert(root, key);
+    root->color = 1;
+    return root;
+}
+
 void clear(Node *root) {
-    if (root == NIL) return;
+    if (root == NIL) return ;
     clear(root->lchild);
     clear(root->rchild);
     free(root);
-    return;
+    return ;
 }
-
 
 void print(Node *root) {
-    printf("(%d| %d %d %d)\n",
-        root->color,root->key,
-        root->lchild->key,root->rchild->key);
-    return;
+    printf("(%d| %d, %d, %d)\n",
+        root->color, root->key,
+        root->lchild->key,
+        root->rchild->key
+    );
+    return ;
 }
+
 void output(Node *root) {
-    if (root == NIL) return;
+    if (root == NIL) return ;
     print(root);
     output(root->lchild);
     output(root->rchild);
-    return;
+    return ;
 }
-int main()
-{   
-    int op,val;
+int main() {
+    int op, val;
     Node *root = NIL;
-    while(~scanf("%d%d",&op,&val)) {
-        switch (op)
-        {
-        case 1:root = insert(root,val);
-            break;
-        
-        default:
-            break;
+    while (~scanf("%d%d", &op, &val)) {
+        switch (op) {
+            case 1: root = insert(root, val); break;
         }
         output(root);
+        printf("------------\n");
     }
-   return 0;
+    return 0;
 }

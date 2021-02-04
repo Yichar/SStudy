@@ -117,7 +117,7 @@ void output(Node *root) {
 
 void output_k(Node *root,int k) {
     if ( k == 0 || root == NULL) return;
-    //左子树数量大于等于k
+    //左子树更多
     if (k <= SIZE(L(root)))
         output_k(root->lchild, k);
     else {
