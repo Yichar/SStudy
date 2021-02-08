@@ -36,6 +36,7 @@ Node* getNewNode(int key) {
     return root;
 }
 
+
 void clear(Node *root) {
     if (root == NIL) return;
     clear(root->lchild);
@@ -118,7 +119,7 @@ Node *erase(Node *root,int val) {
         } else {
             Node *temp = predecessor(root);
             root->key = temp->key;
-            root->lchild = erase(root->lchild,val);
+            root->lchild = erase(root->lchild,temp->key);
         }
     }
     update_height(root);
