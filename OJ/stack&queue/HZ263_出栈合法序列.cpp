@@ -19,6 +19,15 @@ using namespace std;
 
 
 int a[30],s[30],top;
+bool is_valid(int *a, int n) {
+	int j = 0; //入栈最大值
+	for (int i = 0; i < n; i++) {
+		while(j < a[i]) {S.push(++j);} //把小于入栈元素的 值都入栈
+		if(S.top() - a[i]) return false; //若栈顶不等于当前元素 则必然不合法
+		S.pop();
+	}
+	return true;
+}
 
 bool is_valid(int *a, int n) {
     int j = 0; //入栈最大值,注意j只增不减
