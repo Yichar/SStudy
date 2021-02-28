@@ -22,9 +22,9 @@ struct edge {
 };
 
 
-int n, m, head1[1005],head2[1005];
-int ans1[1005], ans2[1005];
-int mark[1005];
+int n, m, head1[10005],head2[10005];
+int ans1[10005], ans2[10005];
+int mark[10005];
 int edg_cnt1, edg_cnt2;
 //遍历2次
 
@@ -39,11 +39,11 @@ void func(edge *edg, int *head, int *ans) {
         int temp = que.front();
         que.pop();
         mark[temp] = 0;
-        for (int i = temp; i != -1; i = edg[i].next) {
+        for (int i = head[temp]; i != -1; i = edg[i].next) {
             int e = edg[i].e, v = edg[i].v;
             if (ans[e] > ans[temp] + v) {
                 ans[e] = ans[temp] + v;
-                if (mark[e] == 0) {
+                if (mark[e] == 0) { // e 不在队列的时候才加入
                     mark[e] = 1;
                     que.push(e);
                 }
@@ -75,7 +75,6 @@ int main() {
     func(edg2,head2,ans2);
 
     for (int i = 1; i <= n; i++){
-        cout << ans1[i] << " ";
         ansfin += ans1[i] + ans2[i];
     }
     cout << ansfin << endl;
