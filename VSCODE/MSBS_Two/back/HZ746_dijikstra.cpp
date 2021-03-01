@@ -36,7 +36,8 @@ void add_edg(int s,int e,int v) {
 }
 int main()
 {
-   
+    memset(head, -1, sizeof(head));
+    memset(ans, 0x3f, sizeof(head));
    cin >> n >> m >> s;
    for (int i = 1; i <= m; i++) {
        int a, b , c;
